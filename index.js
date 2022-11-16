@@ -1,6 +1,6 @@
 require("dotenv").config();
 const { Telegraf } = require("telegraf");
-const { HIPICTURE, BADWORDS } = require("./secrets");
+const { HIPICTURE, BADWORDS, OURCHATLINK, OURCHATID } = require("./secrets");
 const cron = require("node-cron");
 const TOKEN = process.env.TOKEN;
 
@@ -40,20 +40,19 @@ function Statistics(kinda) {
   let sortedChatMembers = Object.entries(chatMembers).sort(
     ([, a], [, b]) => b - a
   );
-  if (kinda === 1) {
+  if (kinda === 1)
     sortedChatMembers = sortedChatMembers.filter((el) => el[1] !== 0);
-  }
-  if (kinda === -1) {
+  if (kinda === -1)
     sortedChatMembers = sortedChatMembers.filter((el) => el[1] === 0);
-  }
+
   sortedChatMembers = sortedChatMembers.reduce(
     (r, [k, v]) => ({ ...r, [k]: v }),
     {}
   );
 
-  Object.keys(sortedChatMembers).map((el) => {
+  Object.keys(sortedChatMembers).forEach((el) => {
     userAnalytics += `${el} - ${chatMembers[el]} messages \n`;
-    return el;
+    return userAnalytics;
   });
 
   if (!userAnalytics) return "There are not any users here.";
@@ -64,10 +63,9 @@ function Statistics(kinda) {
 cron.schedule(
   "30 14 * * *",
   () => {
-    const chatId = -1001866210959;
     const result = Statistics(0);
 
-    Bot.telegram.sendMessage(chatId, result);
+    Bot.telegram.sendMessage(OURCHATID, result);
   },
   {
     scheduled: true,
@@ -104,7 +102,7 @@ Bot.command(["team", "TEAM", "Team"], (ctx) => {
     parse_mode: "MarkdownV2",
   });
   ctx.reply(
-    "*You can [go](https://t.me/+6RWoidohAtMzNjMy) to our chat, and improve this bot*",
+    `*You can [go](${OURCHATLINK}) to our chat, and improve this bot*`,
     { parse_mode: "MarkdownV2" }
   );
 });
@@ -113,12 +111,12 @@ Bot.hears(BADWORDS, async (ctx) => {
   const chatId = ctx.update.message.chat.id;
   const messageId = ctx.update.message.message_id;
   const messageText = ctx.update.message.text;
+  // const { chat: { id }, message_id, text } = ctx.update.message;
   const triggers = messageText.match(BADWORDS).map((el) => el.toLowerCase());
+  const matchedTriggers = [...new Set(triggers)].join(", ");
   await Bot.telegram.deleteMessage(chatId, messageId);
   await ctx.reply(
-    `You can't use the bad words like ||_*${[...new Set(triggers)].join(
-      ", "
-    )}*_|| in the chat\\!`,
+    `You can't use the bad words like ||_*${matchedTriggers}*_|| in the chat\\!`,
     { parse_mode: "MarkdownV2" }
   );
 });
@@ -131,14 +129,14 @@ Bot.start((ctx) =>
 
 Bot.help((ctx) => {
   const commandsList = `/help - list of commands.
-    /about - about this bot.
-    /start - start this bot.
-    /allusers - getting all users.
-    /unactiveusers - getting unactive users.
-    /activeusers - getting active users.
-    /team - getting team members.
-    /hi - getting greetings of bot.
-    `;
+  /about - about this bot.
+  /start - start this bot.
+  /allusers - getting all users.
+  /unactiveusers - getting unactive users.
+  /activeusers - getting active users.
+  /team - getting team members.
+  /hi - getting greetings of bot.
+  `;
   ctx.reply(commandsList);
 });
 
