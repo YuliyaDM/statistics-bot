@@ -4,9 +4,9 @@ const cron = require('node-cron');
 require('dotenv').config()
 const TOKEN = process.env.TOKEN;
 
-const BOT = new Telegraf(TOKEN);
+const Bot = new Telegraf(TOKEN);
 
-BOT.telegram.setMyCommands([
+Bot.telegram.setMyCommands([
     {command: "/start", description: "start bot"},
     {command: "/help", description: "help command"},
     {command: "/about", description: "about team"},
@@ -55,63 +55,63 @@ cron.schedule('30 14 * * *', () => {
     const chatId = -1001866210959;
     let result = Statistics(0);
 
-    BOT.telegram.sendMessage(chatId, result);
+    Bot.telegram.sendMessage(chatId, result);
 }, {
     scheduled: true,
     timezone: "Europe/Kiev"
 });
 
-BOT.command("activeusers", ctx => {
+Bot.command("activeusers", ctx => {
     const result = Statistics(1);
     ctx.reply(result);
 })
 
-BOT.command("unactiveusers", ctx => {
+Bot.command("unactiveusers", ctx => {
     const result = Statistics(-1);
     ctx.reply(result);
 })
 
-BOT.command("getallusers", ctx => {
+Bot.command("getallusers", ctx => {
     const result = Statistics(0);
     ctx.reply(result);
 })
 
-BOT.command(["hi", "HI"], async ctx => {
+Bot.command(["hi", "HI"], async ctx => {
     await ctx.reply("Hi!");
-    await BOT.telegram.sendPhoto(ctx.chat.id, PICTURE1);
+    await Bot.telegram.sendPhoto(ctx.chat.id, PICTURE1);
 });
 
-BOT.command(["about", "ABOUT"], ctx => ctx.reply("I haven't added anything here yet."));
+Bot.command(["about", "ABOUT"], ctx => ctx.reply("I haven't added anything here yet."));
 
-BOT.command(["team", "TEAM", "Team"], ctx => {
+Bot.command(["team", "TEAM", "Team"], ctx => {
     ctx.reply(`_*Hi, This bot is created by Miksam, Vadim, Lera and Lijua*_`, 
     {parse_mode: "MarkdownV2"});
     ctx.reply(`*You can [go](https://t.me/+6RWoidohAtMzNjMy) to our chat, and improve this bot*`,
     {parse_mode: "MarkdownV2"},)
 })
 
-BOT.hears(BADWORDS, async ctx => {
+Bot.hears(BADWORDS, async ctx => {
     const chatId = ctx.update.message.chat.id;
     const messageId = ctx.update.message.message_id;
     const messageText = ctx.update.message.text;
     const triggers = messageText.match(BADWORDS).map(el => el.toLowerCase());
-    await BOT.telegram.deleteMessage(chatId, messageId);
+    await Bot.telegram.deleteMessage(chatId, messageId);
     await ctx.reply(`You can't use the bad words like ||_*${[... new Set(triggers)].join(", ")}*_|| in the chat\\!`, 
     {parse_mode: "MarkdownV2"});
 });
 
-BOT.start(ctx => ctx.reply("Hello, my friend! This bot can help you with analysing of messages and getting statistics."));
+Bot.start(ctx => ctx.reply("Hello, my friend! This bot can help you with analysing of messages and getting statistics."));
 
-BOT.help(ctx => {
+Bot.help(ctx => {
     ctx.reply(`/help - list of commands.
 /about - about this bot.
 /start - start this bot.
 /hi - getting greetings of bot.`)
 })
 
-BOT.command("lazymode_v1", ctx => {
+Bot.command("lazymode_v1", ctx => {
     const chatId = ctx.update.message.chat.id;
-    BOT.telegram.sendMessage(chatId, "You tried the new unofficial command! Okay, so now you can choose the command.", {
+    Bot.telegram.sendMessage(chatId, "You tried the new unofficial command! Okay, so now you can choose the command.", {
         reply_markup: {
             keyboard: [
                 [
@@ -134,7 +134,7 @@ BOT.command("lazymode_v1", ctx => {
     })
 })
 
-BOT.on("message", ctx => {
+Bot.on("message", ctx => {
     const userName = ctx.from.first_name;
     for (let a = 0, members = Object.keys(chatMembers); a < members.length; a++){
         if (members.indexOf(userName) === -1) chatMembers[userName] = 0;
@@ -143,4 +143,4 @@ BOT.on("message", ctx => {
 })
 
 
-BOT.launch();
+Bot.launch();
