@@ -18,14 +18,15 @@ Bot.telegram.setMyCommands([
 
 let usersObject = [];
 const chatMembers = {
-  Miksam: 0,
-  Вадим: 0,
-  Valeria: 0,
-  "Богдан Гришин": 0,
-  Lijua: 0,
+  "@Miksam_13": 0,
+  "@vad22": 0,
+  "@Llairet": 0,
+  "@quartz555": 0,
+  "@ju_dio": 0,
 };
 
-function Statistics(kinda) {
+function Statistics(kinda, ctx) {
+
   const users = Object.keys(chatMembers);
 
   for (let a = 0; a < usersObject.length; a++) {
@@ -40,32 +41,32 @@ function Statistics(kinda) {
   let sortedChatMembers = Object.entries(chatMembers).sort(
     ([, a], [, b]) => b - a
   );
-  if (kinda === 1)
-    sortedChatMembers = sortedChatMembers.filter((el) => el[1] !== 0);
-  if (kinda === -1)
-    sortedChatMembers = sortedChatMembers.filter((el) => el[1] === 0);
+  
+  if (kinda === 1) sortedChatMembers = sortedChatMembers.filter((el) => el[1] !== 0);
+  if (kinda === -1) sortedChatMembers = sortedChatMembers.filter((el) => el[1] === 0);  
 
-  sortedChatMembers = sortedChatMembers.reduce(
-    (r, [k, v]) => ({ ...r, [k]: v }),
-    {}
-  );
+  sortedChatMembers = sortedChatMembers.reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
 
   Object.keys(sortedChatMembers).forEach((el) => {
-    userAnalytics += `${el} - ${chatMembers[el]} messages \n`;
-    return userAnalytics;
+    userAnalytics += `*${el.replace("_", "\\_")}* \\- ${chatMembers[el]} messages \n`;
   });
 
-  if (!userAnalytics) return "There are not any users here.";
+  if (userAnalytics === "") userAnalytics = "There are not any users here\\.";
 
-  return userAnalytics;
+  const chatId = ctx.update.message.chat.id;
+
+  Bot.telegram.sendMessage(chatId, userAnalytics, {
+    parse_mode: "MarkdownV2",
+    disable_notification: true
+  });
+
+  console.log("does it even work?")
 }
 
 cron.schedule(
   "30 14 * * *",
   () => {
-    const result = Statistics(0);
-
-    Bot.telegram.sendMessage(OURCHATID, result);
+    Statistics(0, OURCHATID);
   },
   {
     scheduled: true,
@@ -74,18 +75,16 @@ cron.schedule(
 );
 
 Bot.command("activeusers", (ctx) => {
-  const result = Statistics(1);
-  ctx.reply(result);
+  console.log("test");
+  Statistics(1, ctx);
 });
 
 Bot.command("unactiveusers", (ctx) => {
-  const result = Statistics(-1);
-  ctx.reply(result);
+  Statistics(-1, ctx);
 });
 
 Bot.command("getallusers", (ctx) => {
-  const result = Statistics(0);
-  ctx.reply(result);
+  Statistics(0, ctx);
 });
 
 Bot.command(["hi", "HI"], async (ctx) => {
@@ -111,9 +110,26 @@ Bot.hears(BADWORDS, async (ctx) => {
   const chatId = ctx.update.message.chat.id;
   const messageId = ctx.update.message.message_id;
   const messageText = ctx.update.message.text;
-  // const { chat: { id }, message_id, text } = ctx.update.message;
   const triggers = messageText.match(BADWORDS).map((el) => el.toLowerCase());
-  const matchedTriggers = [...new Set(triggers)].join(", ");
+  const matchedTriggers = [...new Set(triggers)]
+  .map(el => {
+    return el
+    .split("")
+    .map((letter, index) => {
+        const lastIndex = el.length - 1;
+        const matchVowels = el.toUpperCase().match(/[AOEYIUАЕЭОУИЫЯЮ]/gmi);
+        console.log(matchVowels, letter);
+        if (matchVowels !== null) {
+          console.log(letter, matchVowels);
+          if ([...matchVowels][0].length === 1 && matchVowels[0] === letter.toUpperCase()) return "@";
+        }
+        // eslint-disable-next-line yoda
+        if (matchVowels && (0 < index && index < lastIndex)) return "@";
+        return letter;
+    })
+    .join("")
+  })
+  .join(", ");
   await Bot.telegram.deleteMessage(chatId, messageId);
   await ctx.reply(
     `You can't use the bad words like ||_*${matchedTriggers}*_|| in the chat\\!`,
@@ -129,13 +145,13 @@ Bot.start((ctx) =>
 
 Bot.help((ctx) => {
   const commandsList = `/help - list of commands.
-  /about - about this bot.
-  /start - start this bot.
-  /allusers - getting all users.
-  /unactiveusers - getting unactive users.
-  /activeusers - getting active users.
-  /team - getting team members.
-  /hi - getting greetings of bot.
+/about - about this bot.
+/start - start this bot.
+/allusers - getting all users.
+/unactiveusers - getting unactive users.
+/activeusers - getting active users.
+/team - getting team members.
+/hi - getting greetings of bot.
   `;
   ctx.reply(commandsList);
 });
@@ -163,7 +179,7 @@ Bot.command("lazymode_v1", (ctx) => {
 });
 
 Bot.on("message", (ctx) => {
-  const userName = ctx.from.first_name;
+  const userName = "@" + ctx.from.username;
   for (let a = 0, members = Object.keys(chatMembers); a < members.length; a++) {
     if (members.indexOf(userName) === -1) chatMembers[userName] = 0;
   }
