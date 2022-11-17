@@ -12,21 +12,20 @@ Bot.telegram.setMyCommands([
   { command: "/about", description: "about team" },
   { command: "/activeusers", description: "sharing active users" },
   { command: "/unactiveusers", description: "sharing unactive users" },
-  { command: "/getallusers", description: "sharing all statistics" },
+  { command: "/allusers", description: "sharing all statistics" },
   { command: "/lazymode_v1", description: "turning on lazy mode v1" },
 ]);
 
 let usersObject = [];
 const chatMembers = {
-  "@Miksam_13": 0,
-  "@vad22": 0,
-  "@Llairet": 0,
-  "@quartz555": 0,
-  "@ju_dio": 0,
+  "Miksam_13": 0,
+  "vad22": 0,
+  "Llairet": 0,
+  "quartz555": 0,
+  "ju_dio": 0,
 };
 
 function Statistics(kinda, ctx) {
-
   const users = Object.keys(chatMembers);
 
   for (let a = 0; a < usersObject.length; a++) {
@@ -41,26 +40,33 @@ function Statistics(kinda, ctx) {
   let sortedChatMembers = Object.entries(chatMembers).sort(
     ([, a], [, b]) => b - a
   );
-  
-  if (kinda === 1) sortedChatMembers = sortedChatMembers.filter((el) => el[1] !== 0);
-  if (kinda === -1) sortedChatMembers = sortedChatMembers.filter((el) => el[1] === 0);  
 
-  sortedChatMembers = sortedChatMembers.reduce((r, [k, v]) => ({ ...r, [k]: v }), {});
+  if (kinda === 1)
+    sortedChatMembers = sortedChatMembers.filter((el) => el[1] !== 0);
+  if (kinda === -1)
+    sortedChatMembers = sortedChatMembers.filter((el) => el[1] === 0);
+
+  sortedChatMembers = sortedChatMembers.reduce(
+    (r, [k, v]) => ({ ...r, [k]: v }),
+    {}
+  );
 
   Object.keys(sortedChatMembers).forEach((el) => {
-    userAnalytics += `*${el.replace("_", "\\_")}* \\- ${chatMembers[el]} messages \n`;
+    userAnalytics += `*${el.replace("_", "\\_")}* \\- ${
+      chatMembers[el]
+    } messages \n`;
   });
 
   if (userAnalytics === "") userAnalytics = "There are not any users here\\.";
 
-  const chatId = ctx.update.message.chat.id;
+  const { id } = ctx.update.message.chat;
 
-  Bot.telegram.sendMessage(chatId, userAnalytics, {
+  Bot.telegram.sendMessage(id, userAnalytics, {
     parse_mode: "MarkdownV2",
-    disable_notification: true
+    disable_notification: true,
   });
 
-  console.log("does it even work?")
+  console.log("does it even work?");
 }
 
 cron.schedule(
@@ -83,13 +89,14 @@ Bot.command("unactiveusers", (ctx) => {
   Statistics(-1, ctx);
 });
 
-Bot.command("getallusers", (ctx) => {
+Bot.command("allusers", (ctx) => {
   Statistics(0, ctx);
 });
 
 Bot.command(["hi", "HI"], async (ctx) => {
+  const { id } = ctx.chat;
   await ctx.reply("Hi!");
-  await Bot.telegram.sendPhoto(ctx.chat.id, HIPICTURE);
+  await Bot.telegram.sendPhoto(id, HIPICTURE);
 });
 
 Bot.command(["about", "ABOUT"], (ctx) =>
@@ -107,30 +114,30 @@ Bot.command(["team", "TEAM", "Team"], (ctx) => {
 });
 
 Bot.hears(BADWORDS, async (ctx) => {
-  const chatId = ctx.update.message.chat.id;
-  const messageId = ctx.update.message.message_id;
-  const messageText = ctx.update.message.text;
-  const triggers = messageText.match(BADWORDS).map((el) => el.toLowerCase());
+  // eslint-disable-next-line camelcase
+  const { chat: { id }, message_id, text } = ctx.update.message;
+  const triggers = text.match(BADWORDS).map((el) => el.toLowerCase());
   const matchedTriggers = [...new Set(triggers)]
-  .map(el => {
-    return el
-    .split("")
-    .map((letter, index) => {
-        const lastIndex = el.length - 1;
-        const matchVowels = el.toUpperCase().match(/[AOEYIUАЕЭОУИЫЯЮ]/gmi);
-        console.log(matchVowels, letter);
-        if (matchVowels !== null) {
-          console.log(letter, matchVowels);
-          if ([...matchVowels][0].length === 1 && matchVowels[0] === letter.toUpperCase()) return "@";
-        }
-        // eslint-disable-next-line yoda
-        if (matchVowels && (0 < index && index < lastIndex)) return "@";
-        return letter;
+    .map((el) => {
+      return el
+        .split("")
+        .map((letter, index) => {
+          const vowelsRegexp = /[AOEYIUАЕЭОУИЫЯЮ]/gim;
+          const lastIndex = el.length - 1;
+          const letterVowel = letter.match(vowelsRegexp);
+          const vowelEl = el.match(vowelsRegexp);
+          if (
+            (letterVowel && index > 0 && index < lastIndex) ||
+            (vowelEl.length === 1 && letter === vowelEl[0]) ||
+            "AaАа".indexOf(letter) !== -1
+          )
+            return "@";
+          return letter;
+        })
+        .join("");
     })
-    .join("")
-  })
-  .join(", ");
-  await Bot.telegram.deleteMessage(chatId, messageId);
+    .join(", ");
+  await Bot.telegram.deleteMessage(id, message_id);
   await ctx.reply(
     `You can't use the bad words like ||_*${matchedTriggers}*_|| in the chat\\!`,
     { parse_mode: "MarkdownV2" }
@@ -157,9 +164,9 @@ Bot.help((ctx) => {
 });
 
 Bot.command("lazymode_v1", (ctx) => {
-  const chatId = ctx.update.message.chat.id;
+  const { id } = ctx.update.message.chat;
   Bot.telegram.sendMessage(
-    chatId,
+    id,
     "You tried the new unofficial command! Okay, so now you can choose the command.",
     {
       reply_markup: {
@@ -178,8 +185,8 @@ Bot.command("lazymode_v1", (ctx) => {
   );
 });
 
-Bot.on("message", (ctx) => {
-  const userName = "@" + ctx.from.username;
+Bot.on("message", async (ctx) => {
+  const { userName } = ctx.from;
   for (let a = 0, members = Object.keys(chatMembers); a < members.length; a++) {
     if (members.indexOf(userName) === -1) chatMembers[userName] = 0;
   }

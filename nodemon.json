@@ -1,0 +1,3 @@
+{
+    "ignore": ["test.js", "*.md", "*.ts", "*.json", ".gitignore", ".prettierignore", "Procfile", "node_modules", ".env"]
+}
