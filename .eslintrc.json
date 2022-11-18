@@ -9,6 +9,8 @@
   "parserOptions": {
     "ecmaVersion": "latest"
   },
-  "plugins": ["@typescript-eslint"],
-  "rules": {}
+  "plugins": ["@typescript-eslint", "prettier"],
+  "rules": {
+    "prettier/prettier": ["error", { "singleQuote": true }]
+  }
 }

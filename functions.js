@@ -1,4 +1,4 @@
-const { BADWORDS } = require("./secrets");
+const { BADWORDS } = require('./secrets');
 
 function Statistics(kinda, id, usersArr, chatMemb, Bot) {
   const users = Object.keys(chatMemb);
@@ -11,7 +11,7 @@ function Statistics(kinda, id, usersArr, chatMemb, Bot) {
     }
   }
 
-  let userAnalytics = "";
+  let userAnalytics = '';
   let sortedChatMembers = Object.entries(chatMemb).sort(
     ([, a], [, b]) => b - a
   );
@@ -29,21 +29,21 @@ function Statistics(kinda, id, usersArr, chatMemb, Bot) {
   );
 
   Object.keys(sortedChatMembers).forEach((el) => {
-    userAnalytics += `*${el.replace("_", "\\_")}* \\- ${
+    userAnalytics += `*${el.replace('_', '\\_')}* \\- ${
       chatMemb[el]
     } messages \n`;
   });
 
-  if (userAnalytics === "") {
-    userAnalytics = "There are not any users here\\.";
+  if (userAnalytics === '') {
+    userAnalytics = 'There are not any users here\\.';
   }
 
   Bot.telegram.sendMessage(id, userAnalytics, {
-    parse_mode: "MarkdownV2",
+    parse_mode: 'MarkdownV2',
     disable_notification: true,
   });
 
-  console.log("does it even work?");
+  console.log('does it even work?');
 }
 
 function BadWords(ctx) {
@@ -53,7 +53,7 @@ function BadWords(ctx) {
   const matchedTriggers = [...new Set(triggers)]
     .map((el) => {
       return el
-        .split("")
+        .split('')
         .map((letter, index) => {
           const vowelsRegexp = /[AOEYIUАЕЭОУИЫЯЮ]/gim;
           const lastIndex = el.length - 1;
@@ -62,19 +62,19 @@ function BadWords(ctx) {
           if (
             (letterVowel && index > 0 && index < lastIndex) ||
             (vowelEl.length === 1 && letter === vowelEl[0]) ||
-            "AaАа".indexOf(letter) !== -1
+            'AaАа'.indexOf(letter) !== -1
           ) {
-            return "@";
+            return '@';
           }
           return letter;
         })
-        .join("");
+        .join('');
     })
-    .join(", ");
+    .join(', ');
   ctx.deleteMessage();
   ctx.reply(
     `You can't use the bad words like ||_*${matchedTriggers}*_|| in the chat\\!`,
-    { parse_mode: "MarkdownV2" }
+    { parse_mode: 'MarkdownV2' }
   );
 }
 
