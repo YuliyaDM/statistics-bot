@@ -56,10 +56,54 @@ const REPLYMARKUP = {
   resize_keyboard: true,
 };
 
+const CREATORSIMAGES = {
+  creator1: {
+    photoLink:
+      'https://raw.githubusercontent.com/jaluio-rabbit/creators-images/main/Bogdan2_image.jpg',
+    name: 'Bogdan',
+    caption:
+      '<strong>Github</strong> is - <a href="https://github.com/BOGDAN-GRISHIN">Here</a>',
+    siteLink: 'https://github.com/BOGDAN-GRISHIN',
+  },
+  creator2: {
+    photoLink:
+      'https://raw.githubusercontent.com/jaluio-rabbit/creators-images/main/Lera_image.jpg',
+    name: 'Lera',
+    caption:
+      '<strong>Github</strong> is - <a href="https://github.com/Valerchixx">Here</a>',
+    siteLink: 'https://github.com/Valerchixx',
+  },
+  creator3: {
+    photoLink:
+      'https://raw.githubusercontent.com/jaluio-rabbit/creators-images/main/Vadim_image.jpg',
+    name: 'Vadim',
+    caption:
+      '<strong>Github</strong> is - <a href="https://github.com/vavadikb">Here</a>',
+    siteLink: 'https://github.com/vavadikb',
+  },
+  creator4: {
+    photoLink:
+      'https://raw.githubusercontent.com/jaluio-rabbit/creators-images/main/Maksim_image.jpg',
+    name: 'Maksim',
+    caption:
+      '<strong>Github</strong> is - <a href="https://github.com/Miksam13">Here</a>',
+    siteLink: 'https://github.com/Miksam13',
+  },
+  creator5: {
+    photoLink:
+      'https://raw.githubusercontent.com/jaluio-rabbit/creators-images/main/Lijua_image.jpg',
+    name: 'Lijua',
+    caption:
+      '<strong>Github</strong> is - <a href="https://github.com/YuliyaDM">Here</a>',
+    siteLink: 'https://github.com/YuliyaDM',
+  },
+};
+
 module.exports = {
   BADWORDS,
   OURCHATID,
   REPLYMARKUP,
   COMMANDS,
   ABOUTCOMMANDS,
+  CREATORSIMAGES,
 };

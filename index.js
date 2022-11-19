@@ -1,7 +1,14 @@
+/* eslint-disable camelcase */
 require('dotenv').config();
 const { Telegraf } = require('telegraf');
 const { Statistics, BadWords } = require('./functions');
-const { BADWORDS, REPLYMARKUP, COMMANDS, ABOUTCOMMANDS } = require('./secrets');
+const {
+  BADWORDS,
+  REPLYMARKUP,
+  COMMANDS,
+  ABOUTCOMMANDS,
+  CREATORSIMAGES,
+} = require('./secrets');
 const TOKEN = process.env.TOKEN;
 
 const Bot = new Telegraf(TOKEN);
@@ -57,10 +64,34 @@ Bot.hears(BADWORDS, (ctx) => {
   BadWords(ctx);
 });
 
+Bot.inlineQuery('team', (ctx) => {
+  const results = Object.keys(CREATORSIMAGES).map((el, index) => {
+    console.log('parse mode is fucking HTML');
+    return {
+      type: 'article',
+      id: String(index),
+      document_file_id: String(index),
+      title: CREATORSIMAGES[el].name,
+      description: `${CREATORSIMAGES[el].name} is one of the creators.`,
+      input_message_content: {
+        message_text: CREATORSIMAGES[el].caption,
+      },
+      url: CREATORSIMAGES[el].siteLink,
+      thumb_url: CREATORSIMAGES[el].photoLink,
+      thumb_width: 500,
+      thumb_height: 500,
+      parse_mode: 'HTML',
+    };
+  });
+
+  ctx.answerInlineQuery(results);
+});
+
 Bot.on('message', (ctx) => {
-  const { username } = ctx.from;
+  const { username, first_name, last_name } = ctx.from;
+  const fullName = first_name + ' ' + last_name;
   for (let a = 0, members = Object.keys(chatMembers); a < members.length; a++) {
-    if (members.indexOf(username) === -1) {
+    if (members.indexOf(username) === -1 || members.indexOf(fullName) === -1) {
       chatMembers[username] = 0;
     }
   }
