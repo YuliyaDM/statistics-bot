@@ -62,7 +62,7 @@ const CREATORSIMAGES = {
       'https://raw.githubusercontent.com/jaluio-rabbit/creators-images/main/Bogdan2_image.jpg',
     name: 'Bogdan',
     caption:
-      '<strong>Github</strong> is - <a href="https://github.com/BOGDAN-GRISHIN">Here</a>',
+      '<strong>Github</strong> is - <a href="https://github.com/BOGDAN-GRISHIN/">Here</a>',
     siteLink: 'https://github.com/BOGDAN-GRISHIN',
   },
   creator2: {
@@ -70,7 +70,7 @@ const CREATORSIMAGES = {
       'https://raw.githubusercontent.com/jaluio-rabbit/creators-images/main/Lera_image.jpg',
     name: 'Lera',
     caption:
-      '<strong>Github</strong> is - <a href="https://github.com/Valerchixx">Here</a>',
+      '<strong>Github</strong> is - <a href="https://github.com/Valerchixx/">Here</a>',
     siteLink: 'https://github.com/Valerchixx',
   },
   creator3: {
@@ -78,7 +78,7 @@ const CREATORSIMAGES = {
       'https://raw.githubusercontent.com/jaluio-rabbit/creators-images/main/Vadim_image.jpg',
     name: 'Vadim',
     caption:
-      '<strong>Github</strong> is - <a href="https://github.com/vavadikb">Here</a>',
+      '<strong>Github</strong> is - <a href="https://github.com/vavadikb/">Here</a>',
     siteLink: 'https://github.com/vavadikb',
   },
   creator4: {
@@ -86,7 +86,7 @@ const CREATORSIMAGES = {
       'https://raw.githubusercontent.com/jaluio-rabbit/creators-images/main/Maksim_image.jpg',
     name: 'Maksim',
     caption:
-      '<strong>Github</strong> is - <a href="https://github.com/Miksam13">Here</a>',
+      '<strong>Github</strong> is - <a href="https://github.com/Miksam13/">Here</a>',
     siteLink: 'https://github.com/Miksam13',
   },
   creator5: {
@@ -94,7 +94,7 @@ const CREATORSIMAGES = {
       'https://raw.githubusercontent.com/jaluio-rabbit/creators-images/main/Lijua_image.jpg',
     name: 'Lijua',
     caption:
-      '<strong>Github</strong> is - <a href="https://github.com/YuliyaDM">Here</a>',
+      '<strong>Github</strong> is - <a href="https://github.com/YuliyaDM/">Here</a>',
     siteLink: 'https://github.com/YuliyaDM',
   },
 };

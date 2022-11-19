@@ -75,12 +75,12 @@ Bot.inlineQuery('team', (ctx) => {
       description: `${CREATORSIMAGES[el].name} is one of the creators.`,
       input_message_content: {
         message_text: CREATORSIMAGES[el].caption,
+        parse_mode: 'HTML',
       },
       url: CREATORSIMAGES[el].siteLink,
       thumb_url: CREATORSIMAGES[el].photoLink,
       thumb_width: 500,
       thumb_height: 500,
-      parse_mode: 'HTML',
     };
   });
 
