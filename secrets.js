@@ -14,6 +14,7 @@ const ABOUTCOMMANDS = {
     { command: '/unactiveusers', description: 'sharing unactive users' },
     { command: '/allusers', description: 'sharing all statistics' },
     { command: '/lazymode_v1', description: 'turning on lazy mode v1' },
+    { command: '/settings', description: "open bot's settings" },
   ],
   string: `/help - list of commands.
 /about - about this bot.
@@ -56,6 +57,36 @@ const REPLYMARKUP = {
     [{ text: 'remove keyboard' }],
   ],
   resize_keyboard: true,
+};
+
+const CALLBACKQUERY = {
+  reply_markup: {
+    inline_keyboard: [
+      [{ text: '/start' }, { text: '/about' }, { text: '/help' }],
+      [
+        { text: '/unactiveusers' },
+        { text: '/activeusers' },
+        { text: '/allusers' },
+        { text: '/hi' },
+      ],
+      [{ text: 'settings' }],
+    ],
+    resize_keyboard: true,
+  },
+};
+
+const SETTINGS = {
+  reply_markup: {
+    inline_keyboard: [
+      [
+        { text: 'remove inline keyboard', action: 'remove inline keyboard' },
+        { text: 'add inline keyboard', action: 'add inline keyboard' },
+      ],
+      [{ text: 'remove settings', action: 'remove settings' }],
+      [{ text: 'back to list of commands', action: 'back' }],
+    ],
+    resize_keyboard: true,
+  },
 };
 
 const CREATORSIMAGES = {
@@ -101,12 +132,33 @@ const CREATORSIMAGES = {
   },
 };
 
+const INLINEMODERESULT = Object.keys(CREATORSIMAGES).map((el, index) => {
+  return {
+    type: 'article',
+    id: String(index),
+    document_file_id: String(index),
+    title: CREATORSIMAGES[el].name,
+    description: `${CREATORSIMAGES[el].name} is one of the creators.`,
+    input_message_content: {
+      message_text: CREATORSIMAGES[el].caption,
+      parse_mode: 'HTML',
+    },
+    url: CREATORSIMAGES[el].siteLink,
+    thumb_url: CREATORSIMAGES[el].photoLink,
+    thumb_width: 500,
+    thumb_height: 500,
+  };
+});
+
 module.exports = {
   BADWORDS,
   TIMEFORWAITING,
   OURCHATID,
   REPLYMARKUP,
+  CALLBACKQUERY,
   COMMANDS,
   ABOUTCOMMANDS,
   CREATORSIMAGES,
+  INLINEMODERESULT,
+  SETTINGS,
 };

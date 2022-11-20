@@ -8,8 +8,10 @@ const {
   REPLYMARKUP,
   COMMANDS,
   ABOUTCOMMANDS,
-  CREATORSIMAGES,
   TIMEFORWAITING,
+  INLINEMODERESULT,
+  SETTINGS,
+  CALLBACKQUERY,
 } = require('./secrets');
 const TOKEN = process.env.TOKEN;
 
@@ -59,6 +61,31 @@ Bot.command('lazymode_v1', (ctx) => {
   }, TIMEFORWAITING);
 });
 
+Bot.command('lazymode_v2', (ctx) => {
+  ctx.replyWithChatAction('typing');
+  setTimeout(() => {
+    ctx.reply('You opened second keyboard', CALLBACKQUERY);
+  }, TIMEFORWAITING);
+});
+
+Bot.command('settings', (ctx) => {
+  ctx.replyWithChatAction('typing');
+  setTimeout(() => {
+    ctx.reply("You opened settings!", SETTINGS);
+  }, TIMEFORWAITING);
+});
+
+Bot.hears('remove keyboard', (ctx) => {
+  const { first_name } = ctx.update.message.from;
+  setTimeout(() => {
+    ctx.reply(`Reply keyboard for ${first_name} is removed!`, {
+      reply_markup: {
+        remove_keyboard: true,
+      },
+    });
+  }, TIMEFORWAITING);
+});
+
 Bot.hears(['/activeusers', '/unactiveusers', '/allusers'], (ctx) => {
   const { text } = ctx.message;
   const { id } = ctx.update.message.chat;
@@ -76,36 +103,7 @@ Bot.hears(['/activeusers', '/unactiveusers', '/allusers'], (ctx) => {
 });
 
 Bot.inlineQuery('team', (ctx) => {
-  const results = Object.keys(CREATORSIMAGES).map((el, index) => {
-    return {
-      type: 'article',
-      id: String(index),
-      document_file_id: String(index),
-      title: CREATORSIMAGES[el].name,
-      description: `${CREATORSIMAGES[el].name} is one of the creators.`,
-      input_message_content: {
-        message_text: CREATORSIMAGES[el].caption,
-        parse_mode: 'HTML',
-      },
-      url: CREATORSIMAGES[el].siteLink,
-      thumb_url: CREATORSIMAGES[el].photoLink,
-      thumb_width: 500,
-      thumb_height: 500,
-    };
-  });
-
-  ctx.answerInlineQuery(results);
-});
-
-Bot.hears('remove keyboard', (ctx) => {
-  const { first_name } = ctx.update.message.from;
-  setTimeout(() => {
-    ctx.reply(`Reply keyboard for ${first_name} is removed!`, {
-      reply_markup: {
-        remove_keyboard: true,
-      },
-    });
-  }, TIMEFORWAITING);
+  ctx.answerInlineQuery(INLINEMODERESULT);
 });
 
 Bot.hears(BADWORDS, (ctx) => {
