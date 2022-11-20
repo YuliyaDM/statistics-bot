@@ -1,3 +1,6 @@
 {
-    "license.default": "mpl-2.0"
+    "license.default": "mpl-2.0",
+    "license.author": "Julia Pirogova",
+    "license.year": "2022",
+    "license.filename": "LICENSE"
 }
