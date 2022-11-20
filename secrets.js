@@ -4,6 +4,7 @@ const OURCHATLINK = 'https://t.me/+6RWoidohAtMzNjMy';
 const BADWORDSDICTIONARY = swears.join('|');
 const BADWORDS = new RegExp(BADWORDSDICTIONARY, 'gmi');
 const OURCHATID = -1001866210959;
+const TIMEFORWAITING = 500;
 const ABOUTCOMMANDS = {
   list: [
     { command: '/start', description: 'start bot' },
@@ -49,9 +50,10 @@ const REPLYMARKUP = {
     [
       { text: '/unactiveusers' },
       { text: '/activeusers' },
-      { text: '/getallusers' },
+      { text: '/allusers' },
+      { text: '/hi' },
     ],
-    [{ text: '/team' }, { text: '/hi' }],
+    [{ text: 'remove keyboard' }],
   ],
   resize_keyboard: true,
 };
@@ -101,6 +103,7 @@ const CREATORSIMAGES = {
 
 module.exports = {
   BADWORDS,
+  TIMEFORWAITING,
   OURCHATID,
   REPLYMARKUP,
   COMMANDS,

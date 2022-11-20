@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 const { BADWORDS } = require('./secrets');
 
 function Statistics(kinda, id, usersArr, chatMemb, Bot) {
@@ -78,4 +79,15 @@ function BadWords(ctx) {
   );
 }
 
-module.exports = { Statistics, BadWords };
+function CheckChatMembers(ctx, chatMembers) {
+  const { username, first_name, last_name } = ctx.from;
+  const fullName = first_name + ' ' + last_name;
+  for (let a = 0, members = Object.keys(chatMembers); a < members.length; a++) {
+    if (members.indexOf(username) === -1 || members.indexOf(fullName) === -1) {
+      chatMembers[username] = 0;
+    }
+  }
+  return chatMembers;
+}
+
+module.exports = { Statistics, BadWords, CheckChatMembers };
